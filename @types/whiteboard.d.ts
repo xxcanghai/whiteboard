@@ -28,6 +28,12 @@ declare namespace wb {
          * @type {string}
          */
         uid: string;
+        /**
+        * 当前用户鼠标光标位置
+        * 
+        * @type {Point}
+        */
+        position: Point;
     }
 
     /**
@@ -120,7 +126,7 @@ declare namespace wb {
      * 
      * @interface clientEmitDrawLine
      */
-    interface clientEmitDrawLine extends DrawLine{
+    interface clientEmitDrawLine extends DrawLine {
     }
 
     /**
@@ -128,12 +134,36 @@ declare namespace wb {
      * 
      * @interface serverEmitDrawLine
      */
-    interface serverEmitDrawLine extends DrawLine{
+    interface serverEmitDrawLine extends DrawLine {
         /**
          * 当前发出画线的用户对象
          * 
          * @type {wb.clientUser}
          */
+        user: wb.clientUser;
+    }
+
+    interface clientEmitPenMove {
+        /**
+         * 画笔坐标X
+         * 
+         * @type {number}
+         */
+        x: number;
+        /**
+         * 画笔坐标Y
+         * 
+         * @type {number}
+         */
+        y: number;
+    }
+
+    interface serverEmitPenMove {
+        /**
+        * 当前发出画线的用户对象
+        * 
+        * @type {wb.clientUser}
+        */
         user: wb.clientUser;
     }
 

@@ -44,11 +44,20 @@ module.exports = function chatroomio(httpServer) {
         //监听用户发送的画线数据
         client.on('drawLine', function (data, ack) {
             //向所有客户端广播发布的消息
-            var serverChatData = _.extend({
+            var sendData = _.extend({
                 user: getClientUserByServerUser(getUser(client))
             }, data);
-            ack(serverChatData);
-            client.broadcast.emit('drawLine', serverChatData);
+            ack(sendData);
+            client.broadcast.emit('drawLine', sendData);
+        });
+        client.on("penMove", function (data) {
+            //向所有客户端广播发布的消息
+            var sendData = {
+                user: getClientUserByServerUser(getUser(client))
+            };
+            sendData.user.position.x = data.x;
+            sendData.user.position.y = data.y;
+            client.broadcast.emit('penMove', sendData);
         });
     });
     /**
@@ -83,7 +92,8 @@ module.exports = function chatroomio(httpServer) {
         var user = {
             name: name,
             socket: socket,
-            uid: uid
+            uid: uid,
+            position: { x: -9999, y: -9999 }
         };
         return user;
     }
@@ -94,8 +104,11 @@ module.exports = function chatroomio(httpServer) {
      * @returns {wb.clientUser}
      */
     function getClientUserByServerUser(serverUser) {
+        if (serverUser == null)
+            throw new Error("serverUser is null!");
         var clientUser = _.extend({}, serverUser);
         delete clientUser.socket;
+        // clientUser.position = { x: 0, y: 0 };
         return clientUser;
     }
     function logout(client, ack) {

@@ -31,6 +31,7 @@ body {
   height: 100%;
   margin-left: 200px;
   overflow: hidden;
+  position: relative;
 }
 
 #canvas {
@@ -46,6 +47,7 @@ body {
   overflow: scroll;
   width: 100%;
 }
+
 .logBox {
   border-top: 1px solid white;
   height: 200px;
@@ -59,11 +61,24 @@ body {
   word-break: break-all;
   font-size: 12px;
 }
-.main-left .config div{
+
+.main-left .config div {
   padding: 0 10px;
   margin: 5px 0;
 }
-.main-left .username{
+
+.main-left .username {
   width: 100%;
   font-size: 18px;
+}
+
+.cursor {
+  position: absolute;
+  z-index: 99;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.cursor i {
+  transform: rotateZ(90deg);
 }

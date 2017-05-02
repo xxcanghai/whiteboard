@@ -1,4 +1,4 @@
-<% locals.title = "首页"; locals.js = "index"; locals.css = "index" %>
+<% locals.title = "多人共享画板"; locals.js = "index"; locals.css = "index" %>
 <% include component/header %>
 
 <div id="main">
@@ -25,12 +25,12 @@
                 <label for="penColor5"><input type="radio" name="penColor" id="penColor5" value="#ffc107" v-model="penColor">黄</label>
                 <label for="penColor6"><input type="radio" name="penColor" id="penColor6" value="#9c27b0" v-model="penColor">紫</label>
                 <label for="penColor7"><input type="radio" name="penColor" id="penColor7" value="#ffc0cb" v-model="penColor">粉</label>
-                <label for="penColor8"><input type="radio" name="penColor" id="penColor8" value="#795548" v-model="penColor">棕</label>
+                <label for="penColor8"><input type="radio" name="penColor" id="penColor8" value="#f5f5f5" v-model="penColor">白</label>
             </div>
         </div>
 
         <div class="userBox">
-            <div>【在线用户列表】</div>
+            <div>【在线用户列表】 共<span v-text="onLineUserArr.length"></span>人</div>
             <div class="logItem" v-for="user of onLineUserArr" track-by="$index" v-text="user.name"></div>
         </div>
         <div class="logBox">
@@ -42,8 +42,16 @@
         <canvas id="canvas"> 
             您的浏览器不支持canvas
         </canvas>
-    </div>
 
+        <div class="cursorBox">
+            <div class="cursor" v-for="user of onLineUserArr" track-by="$index" 
+                :style={left:user.position.x,top:user.position.y}
+                v-show="user.name!=userName">
+                <i class="fa fa-pencil"></i>
+                <span v-text="user.name"></span>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="/javascripts/draw.js"></script>
 <% include component/footer %>

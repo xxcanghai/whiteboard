@@ -52,11 +52,22 @@ export = function chatroomio(httpServer: http.Server) {
         //监听用户发送的画线数据
         client.on('drawLine', function (data: wb.clientEmitDrawLine, ack?: (data) => void) {
             //向所有客户端广播发布的消息
-            var serverChatData: wb.serverEmitDrawLine = _.extend({
+            var sendData: wb.serverEmitDrawLine = _.extend({
                 user: getClientUserByServerUser(getUser(client))
             }, data);
-            ack(serverChatData);
-            client.broadcast.emit('drawLine', serverChatData);
+            ack(sendData);
+            client.broadcast.emit('drawLine', sendData);
+        });
+
+        client.on("penMove", function (data: wb.clientEmitPenMove) {
+            //向所有客户端广播发布的消息
+            var sendData: wb.serverEmitPenMove = {
+                user: getClientUserByServerUser(getUser(client))
+            };
+            sendData.user.position.x = data.x;
+            sendData.user.position.y = data.y;
+
+            client.broadcast.emit('penMove', sendData);
         });
     });
 
@@ -93,6 +104,7 @@ export = function chatroomio(httpServer: http.Server) {
             name: name,
             socket: socket,
             uid: uid,
+            position: { x: -9999, y: -9999 }
         };
         return user;
     }
@@ -104,8 +116,10 @@ export = function chatroomio(httpServer: http.Server) {
      * @returns {wb.clientUser}
      */
     function getClientUserByServerUser(serverUser: wb.serverUser): wb.clientUser {
+        if(serverUser==null) throw new Error("serverUser is null!");
         var clientUser: wb.clientUser = _.extend({}, serverUser);
         delete (<wb.serverUser>clientUser).socket;
+        // clientUser.position = { x: 0, y: 0 };
         return clientUser;
     }
 

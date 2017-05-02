@@ -64,6 +64,7 @@ draw.onDrawLine = function (startPoint, endPoint) {
         width: draw.penWidth
     }, function () { });
 };
+draw.onMouseMove = debounce(drawOnMouseMove, 100, 100);
 /**
  * 浏览器端发起用户登录
  *
@@ -83,6 +84,30 @@ function clinetLogin() {
     server.on("login", onServerLogin);
     server.on("logout", onServerLogout);
     server.on("drawLine", onServerDrawLine);
+    server.on("penMove", onServerPenMove);
+}
+/**
+ * 当画笔在canvas上移动时发送给服务器
+ *
+ * @param {MouseEvent} e
+ */
+function drawOnMouseMove(e) {
+    server.emit("penMove", {
+        x: e.offsetX,
+        y: e.offsetY
+    });
+}
+/**
+ * 当接收到其他用户发来的画笔坐标位置时
+ *
+ * @param {wb.serverEmitPenMove} d
+ */
+function onServerPenMove(d) {
+    // console.log("onServerPenMove", d);
+    var user = vm.onLineUserArr.filter(function (u) { return u.uid == d.user.uid; })[0];
+    if (user == undefined)
+        return;
+    user.position = d.user.position;
 }
 function clientLogout() {
     server.emit("logout", {}, function () { });
@@ -114,10 +139,43 @@ function onServerLogout(d) {
  */
 function onServerDrawLine(d) {
     console.log("onServerDrawLine", d);
+    var user = vm.onLineUserArr.filter(function (u) { return u.uid == d.user.uid; })[0];
+    if (user != undefined) {
+        user.position = d.endPoint;
+    }
     draw.serverDrawLine(d.startPoint, d.endPoint, d.color, d.width);
 }
 function log(str) {
     vm.logArr.unshift(str);
     console.log(str);
 }
+/**
+ * 函数防抖
+ *
+ * @param {Function} fn 要执行的函数
+ * @param {number} delay 多少毫秒内的重复调用都不触发
+ * @param {number} mustRunDelay 多少毫秒以上必须触发一次
+ * @returns
+ */
+function debounce(fn, delay, mustRunDelay) {
+    var timer = null;
+    var t_start;
+    return function () {
+        var context = this, args = arguments, t_curr = +new Date();
+        clearTimeout(timer);
+        if (!t_start) {
+            t_start = t_curr;
+        }
+        if (t_curr - t_start >= mustRunDelay) {
+            fn.apply(context, args);
+            t_start = t_curr;
+        }
+        else {
+            timer = setTimeout(function () {
+                fn.apply(context, args);
+            }, delay);
+        }
+    };
+}
+;
 //# sourceMappingURL=index.js.map

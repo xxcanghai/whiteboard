@@ -41,7 +41,7 @@ namespace draw {
         canvas.addEventListener("mousedown", mousedown, false);
         canvas.addEventListener("mousemove", mousemove, false);
         canvas.addEventListener("mouseup", mouseup, false);
-        canvas.addEventListener("mouseout", mouseout, false);
+        // canvas.addEventListener("mouseout", mouseout, false);
         canvas.addEventListener("mouseleave", mouseleave, false);
 
         // 监听浏览器窗口宽高变更
@@ -114,6 +114,7 @@ namespace draw {
 
     function mousemove(e: MouseEvent) {
         onMouseMove(e);
+        // debounce(drawOnMouseMove, 100, 300);
         currPoint.x = e.offsetX;
         currPoint.y = e.offsetY;
         drawLine();
@@ -132,10 +133,16 @@ namespace draw {
         drawCurveEnd(new Point(e.offsetX, e.offsetY));
     }
     function mouseleave(e: MouseEvent) {
-        drawCurveEnd();
+        // console.log(e);
+        // var leaveElement: Element = <any>(e.relatedTarget || e.toElement);
+        // if (leaveElement.parentElement || leaveElement.parentElement.className.indexOf("cursor") >= 0) {
+        //     // leaveElement.parentElement.style.display="none";
+        //     return;
+        // };
+        drawCurveEnd(new Point(e.offsetX, e.offsetY));
     }
     function mouseout(e: MouseEvent) {
-        drawCurveEnd();
+        drawCurveEnd(new Point(e.offsetX, e.offsetY));
     }
 
     /**
@@ -156,6 +163,35 @@ namespace draw {
         isMouseDown = false;
     }
 
+
+    /**
+     * 函数防抖
+     * 
+     * @param {Function} fn 要执行的函数
+     * @param {number} delay 多少毫秒内的重复调用都不触发
+     * @param {number} mustRunDelay 多少毫秒以上必须触发一次
+     * @returns 
+     */
+    function debounce(fn: Function, delay: number, mustRunDelay: number) {
+        var timer = null;
+        var t_start;
+        return function () {
+            var context = this, args = arguments, t_curr = +new Date();
+            clearTimeout(timer);
+            if (!t_start) {
+                t_start = t_curr;
+            }
+            if (t_curr - t_start >= mustRunDelay) {
+                fn.apply(context, args);
+                t_start = t_curr;
+            }
+            else {
+                timer = setTimeout(function () {
+                    fn.apply(context, args);
+                }, delay);
+            }
+        };
+    };
     //-----------------外部调用方法-----------------
 
     /**

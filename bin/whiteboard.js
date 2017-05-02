@@ -22,7 +22,7 @@ module.exports = function chatroomio(httpServer) {
             ack(serverLoginData);
             client.broadcast.emit('login', serverLoginData); //向所有连接进来的客户端发送有新用户登录通知
             // client.broadcast.emit("login",serverLoginData);//向除了自己以外的所有客户端发送事件
-            console.log(data.name + ' 加入了聊天室');
+            console.log(data.name + ' 加入了多人白板');
         });
         //监听用户链接断开
         client.on('disconnect', function (data) {
@@ -41,7 +41,7 @@ module.exports = function chatroomio(httpServer) {
                 return;
             logout(user.socket, ack);
         });
-        //监听用户发布聊天内容
+        //监听用户发送的画线数据
         client.on('drawLine', function (data, ack) {
             //向所有客户端广播发布的消息
             var serverChatData = _.extend({
@@ -111,7 +111,7 @@ module.exports = function chatroomio(httpServer) {
         ack(logoData);
         client.broadcast.emit('logout', logoData);
         client.disconnect();
-        console.log(user.name + '退出了聊天室');
+        console.log(user.name + '退出了多人白板');
         return true;
     }
     /**

@@ -1,0 +1,16 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><%=  locals.title || "Whiteboard Collaboration" %></title>
+
+    <% if(("css" in locals) && locals.css.length > 0) { %>
+        <link rel="stylesheet" href="/stylesheets/<%= css %>.css" />
+    <% } %>
+
+    <script src="/javascripts/lib/socket.io.js"></script>
+    <script src="/javascripts/lib/vue.js"></script>
+    <!-- <script src="/javascripts/lib/jquery-1.12.3.js"></script> -->
+    
+</head>
+<body>
+    

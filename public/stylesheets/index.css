@@ -44,7 +44,7 @@ body {
   height: 200px;
   position: absolute;
   bottom: 200px;
-  overflow: scroll;
+  overflow: auto;
   width: 100%;
 }
 
@@ -53,13 +53,16 @@ body {
   height: 200px;
   position: absolute;
   bottom: 0;
-  overflow: scroll;
+  overflow: auto;
   width: 100%;
 }
 
 .logBox .logItem {
   word-break: break-all;
   font-size: 12px;
+}
+.logItem:hover{
+  background-color: #2196f3;
 }
 
 .main-left .config div {

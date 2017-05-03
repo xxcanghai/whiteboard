@@ -5,7 +5,7 @@ namespace draw {
     /** 画笔宽度直径 */
     export var penWidth = 4;
     /** 每次绘制长度阈值（值越小绘制频率越高，曲线越平滑） */
-    export var drawDistance = penWidth / 2;
+    export var drawDistance = penWidth * 2;
     /** 线帽类型 */
     export var lineCap = "round";
 
@@ -36,13 +36,13 @@ namespace draw {
         resetCanvasSize();
     }
 
+    // canvas.addEventListener("mouseout", mouseout, false);
     function bind() {
         //canvas鼠标事件
         canvas.addEventListener("mousedown", mousedown, false);
         canvas.addEventListener("mousemove", mousemove, false);
         canvas.addEventListener("mouseup", mouseup, false);
-        // canvas.addEventListener("mouseout", mouseout, false);
-        canvas.addEventListener("mouseleave", mouseleave, false);
+        // canvas.addEventListener("mouseleave", mouseleave, false);
 
         // 监听浏览器窗口宽高变更
         window.onresize = resetCanvasSize;
